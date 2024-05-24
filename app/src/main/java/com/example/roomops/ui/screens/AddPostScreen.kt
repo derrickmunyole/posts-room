@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.roomops.db.Posts
 import com.example.roomops.ui.PostsEvent
@@ -41,6 +43,11 @@ fun AddPostScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Column(modifier = modifier.fillMaxWidth()) {
+            Text("Create your post",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.primary)
+            Spacer(modifier = modifier.height(48.dp))
             Text(
                 text = "Title",
                 modifier = modifier
@@ -91,6 +98,7 @@ fun AddPostScreenPreview() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Text("Create your post")
         Text(
             text = "Title",
             modifier = Modifier

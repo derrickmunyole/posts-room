@@ -7,4 +7,5 @@ sealed interface PostsEvent {
     data class AddPost(val post: Posts) : PostsEvent
     data class DeletePost(val post: Posts) : PostsEvent
     data class GetPost(val id: Int) : PostsEvent
+    data object ToggleFavorite : PostsEvent
 }

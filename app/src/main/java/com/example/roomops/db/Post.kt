@@ -9,5 +9,5 @@ data class Posts(
     val id: Int? = 0,
     val title: String,
     val body: String,
-    val isFavorite: Boolean
+    val isFavorite: Boolean = false
 )

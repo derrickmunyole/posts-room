@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PostsViewModel @Inject constructor(
     private val dao: PostsDao
-): ViewModel() {
+) : ViewModel() {
     // Initialize _posts with an empty list of Posts
     private val _posts = MutableStateFlow<List<Posts>>(emptyList())
     val posts = _posts.asStateFlow()
@@ -24,16 +24,17 @@ class PostsViewModel @Inject constructor(
 
 
     fun onEvent(event: PostsEvent) {
-        when(event) {
+        when (event) {
             is PostsEvent.AddPost -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     try {
-                       dao.upsertPost(event.post)
+                        dao.upsertPost(event.post)
                     } catch (e: Exception) {
                         throw Exception("Error inserting post", e)
                     }
                 }
             }
+
             is PostsEvent.DeletePost -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     try {
@@ -43,6 +44,7 @@ class PostsViewModel @Inject constructor(
                     }
                 }
             }
+
             is PostsEvent.GetPosts -> {
                 viewModelScope.launch {
                     dao.getAllPosts().collect { posts ->
@@ -50,10 +52,23 @@ class PostsViewModel @Inject constructor(
                     }
                 }
             }
+
             is PostsEvent.GetPost -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     val post = dao.getPostItem(event.id)
                     _currentPost.emit(post)
+                }
+            }
+
+            PostsEvent.ToggleFavorite -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val post = currentPost.value
+                    if (post != null) {
+                        val updatedPost = post.copy(isFavorite = !post.isFavorite)
+                        dao.upsertPost(updatedPost)
+                        _currentPost.emit(updatedPost)
+                    }
+
                 }
             }
         }

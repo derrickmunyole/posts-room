@@ -1,6 +1,8 @@
 package com.example.roomops.ui.screens
 
+import android.renderscript.ScriptIntrinsicBLAS.UNIT
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,6 +39,11 @@ fun PostDetailScreen(itemId: Int, modifier: Modifier = Modifier) {
         viewModel.onEvent(PostsEvent.GetPost(itemId))
     }
 
+    LaunchedEffect(currentPost?.id) {
+        viewModel.onEvent(PostsEvent.ToggleFavorite)
+    }
+
+
     Column(modifier = modifier.fillMaxSize()) {
         if (currentPost == null) {
             PostDetailError()
@@ -53,18 +61,29 @@ fun PostDetailScreen(itemId: Int, modifier: Modifier = Modifier) {
                 Text(text = currentPost!!.body)
                 Spacer(modifier = modifier.height(16.dp))
                 Box(modifier = modifier.align(Alignment.End)) {
-//                    if (currentPost!!.isFavorite) {
-//                        Icon(
-//                        imageVector = Icons.Default.Favorite,
-//                        contentDescription = null,
-//                        tint = MaterialTheme.colorScheme.primary
-//                    )
-//                    }
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                    if (currentPost!!.isFavorite) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = modifier.clickable(
+                                onClick = {
+                                    viewModel.onEvent(PostsEvent.ToggleFavorite)
+                                }
+                            )
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Outlined.FavoriteBorder,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = modifier.clickable(
+                                onClick = {
+                                    viewModel.onEvent(PostsEvent.ToggleFavorite)
+                                }
+                            )
+                        )
+                    }
                 }
             }
         }
