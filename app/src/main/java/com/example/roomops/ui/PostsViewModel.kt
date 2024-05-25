@@ -6,7 +6,9 @@ import com.example.roomops.db.Posts
 import com.example.roomops.db.PostsDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -22,6 +24,10 @@ class PostsViewModel @Inject constructor(
     private val _currentPost = MutableStateFlow<Posts?>(null)
     val currentPost: StateFlow<Posts?> get() = _currentPost
 
+    //Ui Events
+    private val _uiEvents = MutableSharedFlow<UiEvent>()
+    val uiEvents: SharedFlow<UiEvent> get() = _uiEvents
+
 
     fun onEvent(event: PostsEvent) {
         when (event) {
@@ -29,6 +35,7 @@ class PostsViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     try {
                         dao.upsertPost(event.post)
+                        _uiEvents.emit(UiEvent.ShowSnackBar(message = "Post added"))
                     } catch (e: Exception) {
                         throw Exception("Error inserting post", e)
                     }
@@ -39,6 +46,8 @@ class PostsViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     try {
                         dao.deletePost(event.post)
+                        _uiEvents.emit(UiEvent.ShowSnackBar(message = "Post deleted"))
+                        _uiEvents.emit(UiEvent.NavigateToHome)
                     } catch (e: Exception) {
                         throw Exception("Error deleting post", e)
                     }

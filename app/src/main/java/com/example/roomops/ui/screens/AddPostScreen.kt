@@ -9,12 +9,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,17 +32,40 @@ import com.example.roomops.db.Posts
 import com.example.roomops.ui.PostsEvent
 import com.example.roomops.ui.PostsUiState
 import com.example.roomops.ui.PostsViewModel
+import com.example.roomops.ui.SnackbarController
+import com.example.roomops.ui.SnackbarControllerImpl
+import com.example.roomops.ui.UiEvent
 
 @Composable
 fun AddPostScreen(
     modifier: Modifier = Modifier,
+    snackbarController: SnackbarController,
     viewModel: PostsViewModel = hiltViewModel()
 ) {
     var titleText by remember { mutableStateOf("") }
     var postText by remember { mutableStateOf("") }
+    val uiEvents by viewModel.uiEvents.collectAsState(initial = null)
+
+    LaunchedEffect(uiEvents) {
+        viewModel.uiEvents.collect { event ->
+            when (event) {
+                is UiEvent.ShowSnackBar -> {
+                    snackbarController.showMessage(
+                        message = event.message,
+                        actionLabel = null,
+                        withDismissAction = false,
+                        duration = SnackbarDuration.Short,
+                        onSnackbarResult = {}
+                    )
+                }
+                // Handle other events as needed
+                UiEvent.NavigateToHome -> TODO()
+            }
+        }
+    }
+
     Column(
-        modifier = modifier
-            .fillMaxSize()
+        modifier = modifier.fillMaxSize()
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center

@@ -14,6 +14,7 @@ hiltVersion = "2.51.1"
 navigationCompose = "2.7.7"
 hiltCompose = "1.2.0"
 coroutines = "1.3.9"
+material = "1.6.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,6 +39,7 @@ android-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-comp
 androidx-hilt-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltCompose"}
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 android-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines"}
+android-material = { group = "androidx.compose.material", name = "material", version.ref = "material"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

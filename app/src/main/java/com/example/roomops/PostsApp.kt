@@ -11,6 +11,8 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -19,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
@@ -27,6 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.roomops.ui.PostsUiState
+import com.example.roomops.ui.SnackbarControllerImpl
 import com.example.roomops.ui.screens.AddPostScreen
 import com.example.roomops.ui.screens.PostDetailScreen
 import com.example.roomops.ui.screens.PostListScreen
@@ -36,6 +40,8 @@ import com.example.roomops.ui.screens.PostListScreen
 fun PostsApp() {
     val navController = rememberNavController()
     var currentRoute by remember { mutableStateOf("") }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarController = SnackbarControllerImpl(snackbarHostState, rememberCoroutineScope())
 
     /**
      LaunchedEffect tracks changes in the navController's current back stack entry.
@@ -60,6 +66,7 @@ fun PostsApp() {
                 }
             )
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
             Log.d("Current Route:", "Current Route: $currentRoute")
             when (currentRoute) {
@@ -86,7 +93,7 @@ fun PostsApp() {
                         PostDetailScreen(itemId)
                     }
                 }
-                composable("addPost") { AddPostScreen()}
+                composable("addPost") { AddPostScreen(snackbarController = snackbarController)}
             }
         }
     }
